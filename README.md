@@ -1,0 +1,7 @@
+# LoanGauge - AI-Powered Financial Readiness and Loan Planning Platform
+
+LoanGauge is a full-stack fintech platform that helps users assess their financial health and loan readiness before borrowing, going beyond conventional EMI calculators. It analyzes a user's income, expenses, liabilities, savings, and credit profile to generate a proprietary Financial Readiness Score (0–100) using weighted financial indicators such as FOIR, DTI, Savings Ratio, and Credit Utilization.
+
+Built on a microservices architecture with a React.js/Tailwind CSS frontend and Spring Boot backend, the system uses MySQL and MongoDB for data storage, JWT-based authentication with Role-Based Access Control across four user roles, and RabbitMQ for asynchronous report generation and notifications. It integrates the Google Gemini API to power an AI Financial Coach that delivers personalized recommendations, along with features such as goal planning, assessment history comparison, and advisor consultations. The platform also leverages Java Multithreading to execute computationally intensive financial assessments, AI analysis, and background processing tasks concurrently, improving responsiveness and overall system performance.
+
+Tech Stack: Java, Spring Boot, Spring Security, Spring Data JPA, React.js, Redux Toolkit, Tailwind CSS, MySQL, MongoDB, RabbitMQ, Java Multithreading (ExecutorService, CompletableFuture), JWT, BCrypt, Google Gemini API, Docker, AWS EC2, Swagger/OpenAPI
