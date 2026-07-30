@@ -1,0 +1,39 @@
+# React frontend
+node_modules/
+build/
+dist/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.env*
+.DS_Store
+
+# Spring Boot backend
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.iml
+*.ipr
+*.iws
+.idea/
+*.swp
+*~
+hs_err_pid*
+
+# Docker Compose
+docker-compose.override.yml
+*.env
+
+# General
+.vscode/
+.idea/
+*.tmp
+*.temp
