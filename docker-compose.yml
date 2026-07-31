@@ -1,11 +1,10 @@
-version: "3.8"
 services:
   mysql:
     image: mysql:8.0
     container_name: loangauge-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: cdac
-      MYSQL_DATABASE: loangauge
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3307:3306"
     volumes:
@@ -14,6 +13,9 @@ services:
   rabbitmq:
     image: rabbitmq:3.13-management
     container_name: loangauge-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     ports:
       - "5672:5672"
       - "15672:15672"
