@@ -38,7 +38,7 @@ public class ProfileController {
         ProfileResponseDto response = profileService.createProfile(userId, requestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Financial profile created successfully", response));
+                .body(ApiResponse.success(response, "Financial profile created successfully"));
     }
 
     @GetMapping
@@ -47,7 +47,7 @@ public class ProfileController {
 
         Long userId = resolveUserId(userIdHeader);
         ProfileResponseDto response = profileService.getProfileByUserId(userId);
-        return ResponseEntity.ok(ApiResponse.success("Financial profile retrieved successfully", response));
+        return ResponseEntity.ok(ApiResponse.success(response, "Financial profile retrieved successfully"));
     }
 
     @PutMapping
@@ -57,7 +57,7 @@ public class ProfileController {
 
         Long userId = resolveUserId(userIdHeader);
         ProfileResponseDto response = profileService.updateProfile(userId, requestDto);
-        return ResponseEntity.ok(ApiResponse.success("Financial profile updated successfully", response));
+        return ResponseEntity.ok(ApiResponse.success(response, "Financial profile updated successfully"));
     }
 
     @GetMapping("/exists")
@@ -66,6 +66,6 @@ public class ProfileController {
 
         Long userId = resolveUserId(userIdHeader);
         boolean exists = profileService.profileExists(userId);
-        return ResponseEntity.ok(ApiResponse.success("Profile existence checked", exists));
+        return ResponseEntity.ok(ApiResponse.success(exists, "Profile existence checked"));
     }
 }
