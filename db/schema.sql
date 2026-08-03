@@ -27,8 +27,8 @@ CREATE TABLE user (
     role_id         BIGINT NOT NULL,
     subscription_id BIGINT,
     status          VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
-    phone           VARCHAR(20),          -- reserved: not in current scope, may be used for OTP/2FA later
-    profile_picture_url VARCHAR(255),     -- reserved: not in current scope
+    phone           VARCHAR(20),
+    profile_picture_url VARCHAR(255),
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (role_id) REFERENCES role(role_id),
@@ -56,18 +56,23 @@ CREATE TABLE financial_profile (
     emergency_fund      DECIMAL(12,2),
     cibil_score         INT,
     credit_utilization  DECIMAL(5,2),
-    notes               VARCHAR(255),     -- reserved: not in current scope
+    notes               VARCHAR(255),
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE loan_type (
-    loan_type_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
-    loan_name        VARCHAR(100) NOT NULL,
-    category         VARCHAR(20) NOT NULL,
-    interest_rate    DECIMAL(5,2) NOT NULL,
+    loan_type_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    loan_name         VARCHAR(100) NOT NULL,
+    category          VARCHAR(20) NOT NULL,
+    interest_rate     DECIMAL(5,2) NOT NULL,
+    min_interest_rate DECIMAL(5,2),
+    max_interest_rate DECIMAL(5,2),
     max_tenure_months INT NOT NULL,
+    min_loan_amount   DECIMAL(12,2),
+    max_loan_amount   DECIMAL(12,2),
+    min_tenure_months INT,
     foir_excellent_max DECIMAL(5,2),
     foir_acceptable_max DECIMAL(5,2),
     foir_caution_max    DECIMAL(5,2),
@@ -76,7 +81,7 @@ CREATE TABLE loan_type (
     dti_high_max     DECIMAL(5,2),
     multiplier       DECIMAL(5,2),
     description      VARCHAR(255),
-    is_active        BOOLEAN NOT NULL DEFAULT TRUE, -- reserved: lets admin disable a loan type without deleting it
+    is_active        BOOLEAN NOT NULL DEFAULT TRUE,
     created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -89,7 +94,7 @@ CREATE TABLE financial_goal (
     current_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
     target_date    DATE NOT NULL,
     status         VARCHAR(20) NOT NULL DEFAULT 'IN_PROGRESS',
-    notes          VARCHAR(255),          -- reserved: not in current scope
+    notes          VARCHAR(255),
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
@@ -112,7 +117,8 @@ CREATE TABLE loan_assessment (
     financial_score   INT,
     risk_level        VARCHAR(30),
     eligible_amount   DECIMAL(12,2),
-    status            VARCHAR(20) DEFAULT 'COMPLETED', -- reserved: e.g. PENDING/COMPLETED/FAILED if async processing needs it
+    status            VARCHAR(20) DEFAULT 'COMPLETED',
+    assessment_date   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(user_id),
@@ -144,11 +150,12 @@ INSERT INTO subscription (plan_name, price, status) VALUES
   ('PREMIUM', 499.00, 'ACTIVE');
 
 INSERT INTO loan_type
-  (loan_name, category, interest_rate, max_tenure_months,
+  (loan_name, category, interest_rate, min_interest_rate, max_interest_rate, max_tenure_months,
+   min_loan_amount, max_loan_amount, min_tenure_months,
    foir_excellent_max, foir_acceptable_max, foir_caution_max,
    dti_low_max, dti_moderate_max, dti_high_max, multiplier, description)
 VALUES
-  ('Home Loan', 'SECURED', 8.50, 240, 45, 60, 70, 35, 50, 60, 55, 'Secured against property'),
-  ('Auto Loan', 'SECURED', 9.50, 84,  40, 55, 65, 30, 45, 55, 20, 'Secured against vehicle'),
-  ('Personal Loan', 'UNSECURED', 13.00, 60, 40, 50, 60, 30, 40, 50, 15, 'Unsecured, higher rate'),
-  ('Education Loan', 'SECURED', 10.00, 180, 40, 55, 65, 30, 45, 55, 20, 'Semi-secured, income-based');
+  ('Home Loan', 'SECURED', 8.50, 7.50, 11.50, 240, 100000, 100000000, 12, 45, 60, 70, 35, 50, 60, 55, 'Secured against property'),
+  ('Auto Loan', 'SECURED', 9.50, 7.50, 14.00, 84,  50000,  5000000,   12, 40, 55, 65, 30, 45, 55, 20, 'Secured against vehicle'),
+  ('Personal Loan', 'UNSECURED', 13.00, 10.00, 24.00, 60, 10000,  4000000,   6,  40, 50, 60, 30, 40, 50, 15, 'Unsecured, higher rate'),
+  ('Education Loan', 'SECURED', 10.00, 8.00, 15.00, 180, 50000,  15000000,  12, 40, 55, 65, 30, 45, 55, 20, 'Semi-secured, income-based');
