@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AssessmentService {
 
-    AssessmentResponseDto createAssessment(Long userId, AssessmentRequestDto request);
+	AssessmentResponseDto createAssessment(Long userId, String role, AssessmentRequestDto request);
 
     AssessmentResponseDto getAssessmentById(Long userId, Long assessmentId);
 

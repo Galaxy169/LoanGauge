@@ -51,9 +51,12 @@ public class AssessmentController {
 	public ResponseEntity<ApiResponse<AssessmentResponseDto>> createAssessment(
 			@Valid @RequestBody AssessmentRequestDto request) {
 		Long userId = SecurityUtil.getCurrentUserId();
-		AssessmentResponseDto result = assessmentService.createAssessment(userId, request);
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(ApiResponse.success(result, "Assessment completed successfully"));
+		String role = SecurityUtil.getCurrentUserRole();
+		AssessmentResponseDto result = assessmentService.createAssessment(userId, role, request);
+		
+	    return ResponseEntity
+	            .status(HttpStatus.CREATED)
+	            .body(ApiResponse.success(result, "Assessment completed successfully"));
 
 	}
 	
