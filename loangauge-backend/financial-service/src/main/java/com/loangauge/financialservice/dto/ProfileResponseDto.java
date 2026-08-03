@@ -3,6 +3,7 @@ package com.loangauge.financialservice.dto;
 import java.math.BigDecimal;
 
 public record ProfileResponseDto(
+
         Long profileId,
         Long userId,
         Integer age,
@@ -22,6 +23,8 @@ public record ProfileResponseDto(
         BigDecimal investments,
         BigDecimal emergencyFund,
         Integer cibilScore,
-        BigDecimal creditUtilization
+        BigDecimal creditUtilization,
+        String notes,
+
 ) {
 }
