@@ -1,28 +1,27 @@
-import { apiSlice } from '../app/apiSlice';
+import { apiSlice } from "./apiSlice";
 
 export const notificationService = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-
     // GET /api/notifications/{userId}
     getNotifications: builder.query({
       query: (userId) => `/notify/api/notifications/${userId}`,
-      providesTags: ['Notification'],
+      providesTags: ["Notification"],
     }),
 
     // PUT /api/notifications/{id}/read
     markNotificationRead: builder.mutation({
       query: (id) => ({
         url: `/notify/api/notifications/${id}/read`,
-        method: 'PUT',
+        method: "PUT",
       }),
-      invalidatesTags: ['Notification'],
+      invalidatesTags: ["Notification"],
     }),
 
     // GET /api/reports/{assessmentId}/download?loanType=&loanAmount=&foir=&dti=&score=&riskCategory=&eligibleAmount=
     downloadReport: builder.mutation({
       query: ({ assessmentId, ...params }) => ({
         url: `/notify/api/reports/${assessmentId}/download`,
-        method: 'GET',
+        method: "GET",
         params,
         responseHandler: (response) => response.blob(),
       }),
@@ -32,7 +31,7 @@ export const notificationService = apiSlice.injectEndpoints({
     emailReport: builder.mutation({
       query: ({ assessmentId, ...params }) => ({
         url: `/notify/api/reports/${assessmentId}/email`,
-        method: 'POST',
+        method: "POST",
         params,
       }),
     }),
@@ -41,7 +40,7 @@ export const notificationService = apiSlice.injectEndpoints({
     createRazorpayOrder: builder.mutation({
       query: (amount) => ({
         url: `/notify/api/payments/order`,
-        method: 'POST',
+        method: "POST",
         body: { amount },
       }),
     }),
@@ -50,11 +49,10 @@ export const notificationService = apiSlice.injectEndpoints({
     verifyRazorpayPayment: builder.mutation({
       query: (payload) => ({
         url: `/notify/api/payments/verify`,
-        method: 'POST',
+        method: "POST",
         body: payload,
       }),
     }),
-
   }),
 });
 
