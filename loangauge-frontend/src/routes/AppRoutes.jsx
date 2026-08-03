@@ -19,6 +19,9 @@ import ComparisonPage from "../pages/comparison/ComparisonPage";
 import AdvisorDashboardPage from "../pages/advisor/AdvisorDashboardPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 
+import ReportsPage from '../pages/reports/ReportsPage';
+
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -52,6 +55,12 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute allowedRoles={["ADMINISTRATOR"]} />}>
         <Route path="/admin" element={<AdminDashboardPage />} />
       </Route>
+
+        <Route path="/reports/:assessmentId" element={
+  <ProtectedRoute><ReportsPage /></ProtectedRoute>
+} />
+
+
     </Routes>
   );
 }
