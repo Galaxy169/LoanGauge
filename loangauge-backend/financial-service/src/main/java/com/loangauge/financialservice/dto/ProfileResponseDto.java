@@ -1,7 +1,6 @@
 package com.loangauge.financialservice.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public record ProfileResponseDto(
 
@@ -26,8 +25,6 @@ public record ProfileResponseDto(
         Integer cibilScore,
         BigDecimal creditUtilization,
         String notes,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
 
 ) {
 }
