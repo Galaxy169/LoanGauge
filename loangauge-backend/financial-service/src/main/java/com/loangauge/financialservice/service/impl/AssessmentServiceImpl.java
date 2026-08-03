@@ -73,6 +73,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 
         // 5. Run all calculators
         LoanAssessment assessment = runCalculations(userId, request, loanType, profile);
+        
 
         // 6. Persist (immutable history — never updated after creation)
         LoanAssessment saved = assessmentRepository.save(assessment);
@@ -163,10 +164,13 @@ public class AssessmentServiceImpl implements AssessmentService {
         int employmentScore = FinancialScoreCalculator.scoreEmploymentStability(workExpYears, incomeStability);
         int disposableScore = FinancialScoreCalculator.scoreDisposableIncome(disposableIncome, monthlyIncome);
 
-        int finalScore = FinancialScoreCalculator.calculateFinalScore(
+        
+        int weightedScore = FinancialScoreCalculator.calculateFinalScore(
                 foirScore, dtiScore, creditProfileScore, savingsScore,
                 employmentScore, emergencyScore, creditUtilScore, disposableScore);
+        int finalScore = FinancialScoreCalculator.applyAffordabilityCap(weightedScore, foir, disposableIncome);
         RiskLevel riskLevel = FinancialScoreCalculator.classifyRisk(finalScore);
+        
 
         // --- eligible loan amount ---
         BigDecimal eligibleAmount = EligibilityCalculator.calculateEligibleAmount(
