@@ -44,8 +44,9 @@ public class AssessmentServiceImpl implements AssessmentService {
 
     @Override
     @Transactional
-    public AssessmentResponseDto createAssessment(Long userId, AssessmentRequestDto request) {
-        log.info("Starting assessment for userId={} loanTypeId={}", userId, request.loanTypeId());
+    public AssessmentResponseDto createAssessment(Long userId, String role, AssessmentRequestDto request) {
+    	log.info("Starting assessment for userId={} role=[{}] loanTypeId={}", userId, role, request.loanTypeId());
+//        log.info("Starting assessment for userId={} role={} loanTypeId={}", userId, role, request.loanTypeId());
 
         // 1. Load the selected loan type
         LoanType loanType = loanTypeRepository.findById(request.loanTypeId())
@@ -58,11 +59,22 @@ public class AssessmentServiceImpl implements AssessmentService {
         // NOTE: this counts ALL past assessments. When subscription-tier info is
         // available (from JWT role or a call to auth/subscription), gate this so only
         // FREE users are limited. For now it enforces the limit for everyone.
-        long existingCount = assessmentRepository.countByUserId(userId);
-        if (existingCount >= freeTierLimit) {
-            throw new AssessmentLimitExceededException(
-                    "Free-tier assessment limit of " + freeTierLimit + " reached. Upgrade to Premium for unlimited assessments.");
+//        long existingCount = assessmentRepository.countByUserId(userId);
+//        if (existingCount >= freeTierLimit) {
+//            throw new AssessmentLimitExceededException(
+//                    "Free-tier assessment limit of " + freeTierLimit + " reached. Upgrade to Premium for unlimited assessments.");
+//        }
+        
+        // Free-tier assessment limit — only applies to standard USER role.
+        // PREMIUM_USER (and advisor/admin) get unlimited assessments.
+        if ("USER".equals(role)) {
+            long existingCount = assessmentRepository.countByUserId(userId);
+            if (existingCount >= freeTierLimit) {
+                throw new AssessmentLimitExceededException(
+                        "Free-tier assessment limit of " + freeTierLimit + " reached. Upgrade to Premium for unlimited assessments.");
+            }
         }
+        
 
         // 4. Pull the user's financial profile (Member 3's module).
         //    Confirm this method name + DTO getters with Member 3.
