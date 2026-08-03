@@ -24,7 +24,7 @@ public record ProfileResponseDto(
         BigDecimal emergencyFund,
         Integer cibilScore,
         BigDecimal creditUtilization,
-        String notes,
+        String notes
 
 ) {
 }

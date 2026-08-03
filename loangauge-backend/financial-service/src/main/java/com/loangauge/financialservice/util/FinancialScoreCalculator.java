@@ -138,6 +138,24 @@ public class FinancialScoreCalculator {
         return RiskLevel.HIGH_RISK;
     }
     
+    /**
+     * Affordability guardrail: no matter how healthy the other metrics are, a loan the
+     * user fundamentally cannot afford (obligations far exceeding income, or negative
+     * disposable income) must not score as merely "moderate". A weighted average alone
+     * lets healthy savings/credit dilute a catastrophic FOIR — this caps that.
+     */
+    public static int applyAffordabilityCap(int weightedScore, BigDecimal foir, BigDecimal disposableIncome) {
+        // Negative disposable income = cannot service the loan at all → hard cap at High Risk band.
+        if (disposableIncome != null && disposableIncome.compareTo(BigDecimal.ZERO) < 0) {
+            return Math.min(weightedScore, 39); // forces HIGH_RISK
+        }
+        // FOIR beyond ~75% is unaffordable by any lender's standard → cap at Needs Improvement.
+        if (foir != null && foir.compareTo(BigDecimal.valueOf(75)) > 0) {
+            return Math.min(weightedScore, 55); // forces NEEDS_IMPROVEMENT or worse
+        }
+        return weightedScore;
+    }
+    
     
     // Handle Null, null => 0 : the value.
     private static BigDecimal nz(BigDecimal v) {

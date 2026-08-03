@@ -47,6 +47,7 @@ public class StubProfileServiceImpl implements ProfileService {
                 new BigDecimal("300000"),    // emergencyFund
                 760,                         // cibilScore
                 new BigDecimal("25.00")      // creditUtilization
+, null
         );
     }
 }
