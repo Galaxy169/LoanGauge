@@ -58,9 +58,7 @@ public class ProfileMapper {
                 profile.getEmergencyFund(),
                 profile.getCibilScore(),
                 profile.getCreditUtilization(),
-                profile.getNotes(),
-                profile.getCreatedAt(),
-                profile.getUpdatedAt()
+                profile.getNotes()
         );
     }
 }

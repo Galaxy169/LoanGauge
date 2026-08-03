@@ -1,22 +1,38 @@
 package com.loangauge.authservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
+
 import java.time.LocalDateTime;
 
-/**
- * Standard success response envelope — every successful response from this
- * service returns this shape. Pairs with ApiError, which covers the failure case.
- */
-public record ApiResponse<T>(
-        boolean success,
-        String message,
-        T data,
-        LocalDateTime timestamp
-) {
-    public static <T> ApiResponse<T> success(T data, String message) {
-        return new ApiResponse<>(true, message, data, LocalDateTime.now());
+@Data
+@Builder
+@Jacksonized
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ApiResponse<T> {
+
+    private boolean success;
+    private String message;
+    private T data;
+
+    @Builder.Default
+    private LocalDateTime timestamp = LocalDateTime.now();
+
+    public static <T> ApiResponse<T> success(String message, T data) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message(message)
+                .data(data)
+                .build();
     }
 
-    public static <T> ApiResponse<T> success(T data) {
-        return success(data, "Request successful");
+    public static <T> ApiResponse<T> success(String message) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message(message)
+                .build();
     }
 }
