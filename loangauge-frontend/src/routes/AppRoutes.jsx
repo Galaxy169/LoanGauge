@@ -20,6 +20,11 @@ import AdvisorDashboardPage from "../pages/advisor/AdvisorDashboardPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 
 import ReportsPage from '../pages/reports/ReportsPage';
+<<<<<<< HEAD
+=======
+import DevLoginPage from "../pages/auth/DevLoginPage";
+import AssessmentResultPage from "../pages/assessment/AssessmentResultPage";
+>>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
 
 
 export default function AppRoutes() {
@@ -34,7 +39,7 @@ export default function AppRoutes() {
         path="/terms-and-conditions"
         element={<TermsAndConditionsPage />}
       />
-
+      <Route path="/dev-login" element={<DevLoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -44,6 +49,7 @@ export default function AppRoutes() {
       >
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/assessment" element={<AssessmentFormPage />} />
+        <Route path="/assessment/result" element={<AssessmentResultPage />} />
         <Route path="/goals" element={<GoalsPage />} />
         <Route path="/comparison" element={<ComparisonPage />} />
       </Route>
@@ -56,11 +62,22 @@ export default function AppRoutes() {
         <Route path="/admin" element={<AdminDashboardPage />} />
       </Route>
 
+<<<<<<< HEAD
         <Route path="/reports/:assessmentId" element={
   <ProtectedRoute><ReportsPage /></ProtectedRoute>
 } />
 
 
+=======
+      <Route
+        path="/reports/:assessmentId"
+        element={
+          <ProtectedRoute>
+            <ReportsPage />
+          </ProtectedRoute>
+        }
+      />
+>>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
     </Routes>
   );
 }

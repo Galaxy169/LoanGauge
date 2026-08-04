@@ -139,6 +139,28 @@ CREATE TABLE advisor_consultation (
     FOREIGN KEY (advisor_user_id) REFERENCES user(user_id)
 );
 
+CREATE TABLE refresh_token (
+    refresh_token_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    token            VARCHAR(500) NOT NULL UNIQUE,
+    user_id          BIGINT NOT NULL,
+    expiry_date      TIMESTAMP NOT NULL,
+    revoked          BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+
+CREATE TABLE password_reset_token (
+    reset_token_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    token          VARCHAR(255) NOT NULL UNIQUE,
+    user_id        BIGINT NOT NULL,
+    expiry_date    TIMESTAMP NOT NULL,
+    used           BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
+);
+
 INSERT INTO role (role_name, description) VALUES
   ('USER', 'Standard registered user'),
   ('PREMIUM_USER', 'Paid subscriber with full feature access'),
