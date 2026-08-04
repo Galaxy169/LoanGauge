@@ -6,15 +6,22 @@ import lombok.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "password_reset_tokens", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "token")
-})
+<<<<<<< HEAD
+@Table(name = "password_reset_token")
+=======
+@Table(name = "password_reset_tokens")
+>>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class PasswordResetToken extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reset_token_id")
+    private Long id;
 
     @Column(nullable = false, unique = true, length = 255)
     private String token;
@@ -23,7 +30,7 @@ public class PasswordResetToken extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "expiry_date", nullable = false)
     private Instant expiryDate;
 
     @Column(nullable = false)
