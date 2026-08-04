@@ -80,10 +80,6 @@ public class AuthServiceImpl implements AuthService {
             throw new AccountDisabledException("This account is not active");
         }
 
-<<<<<<< HEAD
-=======
-        // single active session per user — clear any existing refresh token first
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
         refreshTokenRepository.deleteByUser(user);
 
         return issueTokens(user);
@@ -105,11 +101,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = storedToken.getUser();
-<<<<<<< HEAD
-=======
-
-        // rotate refresh token on every use
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
         refreshTokenRepository.delete(storedToken);
 
         return issueTokens(user);
