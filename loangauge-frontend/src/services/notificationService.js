@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import { apiSlice } from '../app/apiSlice';
-
-export const notificationService = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-
-    // GET /api/notifications/{userId}
-    getNotifications: builder.query({
-      query: (userId) => `/notify/api/notifications/${userId}`,
-      providesTags: ['Notification'],
-=======
 import { apiSlice } from "./apiSlice";
 
 export const notificationService = apiSlice.injectEndpoints({
@@ -17,33 +6,22 @@ export const notificationService = apiSlice.injectEndpoints({
     getNotifications: builder.query({
       query: (userId) => `/notify/api/notifications/${userId}`,
       providesTags: ["Notification"],
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
     }),
 
     // PUT /api/notifications/{id}/read
     markNotificationRead: builder.mutation({
       query: (id) => ({
         url: `/notify/api/notifications/${id}/read`,
-<<<<<<< HEAD
         method: 'PUT',
       }),
       invalidatesTags: ['Notification'],
-=======
-        method: "PUT",
-      }),
-      invalidatesTags: ["Notification"],
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
     }),
 
     // GET /api/reports/{assessmentId}/download?loanType=&loanAmount=&foir=&dti=&score=&riskCategory=&eligibleAmount=
     downloadReport: builder.mutation({
       query: ({ assessmentId, ...params }) => ({
         url: `/notify/api/reports/${assessmentId}/download`,
-<<<<<<< HEAD
-        method: 'GET',
-=======
         method: "GET",
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
         params,
         responseHandler: (response) => response.blob(),
       }),
@@ -53,11 +31,7 @@ export const notificationService = apiSlice.injectEndpoints({
     emailReport: builder.mutation({
       query: ({ assessmentId, ...params }) => ({
         url: `/notify/api/reports/${assessmentId}/email`,
-<<<<<<< HEAD
         method: 'POST',
-=======
-        method: "POST",
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
         params,
       }),
     }),
@@ -66,11 +40,7 @@ export const notificationService = apiSlice.injectEndpoints({
     createRazorpayOrder: builder.mutation({
       query: (amount) => ({
         url: `/notify/api/payments/order`,
-<<<<<<< HEAD
-        method: 'POST',
-=======
         method: "POST",
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
         body: { amount },
       }),
     }),
@@ -79,18 +49,10 @@ export const notificationService = apiSlice.injectEndpoints({
     verifyRazorpayPayment: builder.mutation({
       query: (payload) => ({
         url: `/notify/api/payments/verify`,
-<<<<<<< HEAD
         method: 'POST',
         body: payload,
       }),
     }),
-
-=======
-        method: "POST",
-        body: payload,
-      }),
-    }),
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
   }),
 });
 
@@ -101,8 +63,4 @@ export const {
   useEmailReportMutation,
   useCreateRazorpayOrderMutation,
   useVerifyRazorpayPaymentMutation,
-<<<<<<< HEAD
 } = notificationService;
-=======
-} = notificationService;
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428

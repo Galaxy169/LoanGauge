@@ -19,7 +19,7 @@ export default function DevLoginPage() {
     try {
       dispatch(setCredentials({ accessToken: token.trim() }));
       toast.success("Logged in (dev)");
-      navigate("/profile");
+      navigate("/assessment");
     } catch {
       toast.error("Invalid token");
     }

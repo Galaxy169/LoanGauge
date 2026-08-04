@@ -19,13 +19,9 @@ import ComparisonPage from "../pages/comparison/ComparisonPage";
 import AdvisorDashboardPage from "../pages/advisor/AdvisorDashboardPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 
-import ReportsPage from '../pages/reports/ReportsPage';
-<<<<<<< HEAD
-=======
+import ReportsPage from "../pages/reports/ReportsPage";
 import DevLoginPage from "../pages/auth/DevLoginPage";
 import AssessmentResultPage from "../pages/assessment/AssessmentResultPage";
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
-
 
 export default function AppRoutes() {
   return (
@@ -62,13 +58,6 @@ export default function AppRoutes() {
         <Route path="/admin" element={<AdminDashboardPage />} />
       </Route>
 
-<<<<<<< HEAD
-        <Route path="/reports/:assessmentId" element={
-  <ProtectedRoute><ReportsPage /></ProtectedRoute>
-} />
-
-
-=======
       <Route
         path="/reports/:assessmentId"
         element={
@@ -77,7 +66,6 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
     </Routes>
   );
 }

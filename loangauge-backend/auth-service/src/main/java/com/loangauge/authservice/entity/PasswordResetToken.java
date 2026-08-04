@@ -6,11 +6,7 @@ import lombok.*;
 import java.time.Instant;
 
 @Entity
-<<<<<<< HEAD
 @Table(name = "password_reset_token")
-=======
-@Table(name = "password_reset_tokens")
->>>>>>> bca40a80a96baae4c6bf0ca498fd30ec6ff89428
 @Getter
 @Setter
 @NoArgsConstructor
