@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
+@Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,34 +12,37 @@ import lombok.*;
 @Builder
 public class User extends BaseEntity {
 
-    @Column(nullable = false, length = 100)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
+
+    @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
 
-    @Column(length = 15)
-    private String phone;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "subscription_id")
+    private Long subscriptionId;
+
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private Role role = Role.USER;
+    private String status = "ACTIVE";
 
-    @Column(nullable = false)
-    @Builder.Default
-    private boolean enabled = true;
+    @Column(length = 20)
+    private String phone;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private boolean accountNonLocked = true;
-
-    @Column(name = "last_login")
-    private java.time.LocalDateTime lastLogin;
+    @Column(name = "profile_picture_url", length = 255)
+    private String profilePictureUrl;
 }

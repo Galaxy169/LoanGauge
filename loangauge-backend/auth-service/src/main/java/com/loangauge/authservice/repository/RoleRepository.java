@@ -1,13 +1,12 @@
 package com.loangauge.authservice.repository;
 
-import com.loangauge.authservice.entity.User;
+import com.loangauge.authservice.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
-    boolean existsByEmail(String email);
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Optional<Role> findByRoleName(String roleName);
 }
