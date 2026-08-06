@@ -6,10 +6,9 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/loangauge?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/loangauge
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -18,7 +17,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    open-in-view: false
 
   mail:
     host: smtp-relay.brevo.com
@@ -40,6 +38,8 @@ eureka:
     prefer-ip-address: true
 
 app:
+  mail:
+    from: ${MAIL_FROM:noreply@loangauge.com}
   jwt:
     secret: ${JWT_SECRET}
     access-token-expiration-ms: 900000        # 15 minutes
@@ -48,6 +48,9 @@ app:
   frontend:
     reset-password-url: http://localhost:5173/reset-password
   refresh-token-cookie-name: refreshToken
+
+internal:
+  api-secret: ${INTERNAL_API_SECRET}
 
 springdoc:
   api-docs:

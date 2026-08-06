@@ -5,12 +5,12 @@ spring:
   application:
     name: financial-service
   datasource:
-    url: jdbc:mysql://localhost:3306/loangauge?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/loangauge
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -23,8 +23,6 @@ spring:
     port: 5672
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
-  profiles:
-    active: stub
 
 eureka:
   client:

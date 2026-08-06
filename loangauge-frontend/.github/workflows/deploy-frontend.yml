@@ -1,0 +1,67 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'loangauge-backend/**'
+      - '**.md'
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: loangauge-frontend
+  ECS_CLUSTER: loangauge-cluster
+  ECS_SERVICE: loangauge-frontend-service
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      # OIDC federated auth — no long-lived AWS access keys stored as GitHub
+      # secrets. Requires an IAM OIDC identity provider + trust policy for
+      # this repo, set up once (see DEPLOYMENT_GUIDE.md).
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" \
+            .
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+      # No task-definition edit needed here — API_BASE_URL and
+      # RAZORPAY_KEY_ID live as environment variables on the ECS task
+      # definition itself (see runtimeConfig.js / docker/entrypoint.sh),
+      # not baked into the image, so a plain forced redeployment of the
+      # same task definition with the new image is enough.
+      - name: Force new ECS deployment
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --force-new-deployment
+
+      - name: Wait for service to stabilize
+        run: |
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE"

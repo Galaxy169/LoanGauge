@@ -129,7 +129,7 @@ CREATE TABLE advisor_consultation (
     consultation_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
     assessment_id     BIGINT NOT NULL,
     user_id           BIGINT NOT NULL,
-    advisor_user_id   BIGINT NOT NULL,
+    advisor_user_id   BIGINT,
     remarks           TEXT,
     status            VARCHAR(20) NOT NULL DEFAULT 'PENDING',
     created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -161,23 +161,27 @@ CREATE TABLE password_reset_token (
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
-INSERT INTO role (role_name, description) VALUES
-  ('USER', 'Standard registered user'),
-  ('PREMIUM_USER', 'Paid subscriber with full feature access'),
-  ('FINANCIAL_ADVISOR', 'Reviews assessments and gives professional guidance'),
-  ('ADMINISTRATOR', 'Manages users, loan types, subscriptions, and system settings');
+-- Note: Master data (roles, subscriptions, and default loan types) are automatically 
+-- seeded idempotently on application startup by Spring Boot CommandLineRunners 
+-- (AdminSeeder in auth-service and LoanTypeSeeder in financial-service).
 
-INSERT INTO subscription (plan_name, price, status) VALUES
-  ('FREE', 0.00, 'ACTIVE'),
-  ('PREMIUM', 499.00, 'ACTIVE');
+-- INSERT INTO role (role_name, description) VALUES
+--   ('USER', 'Standard registered user'),
+--   ('PREMIUM_USER', 'Paid subscriber with full feature access'),
+--   ('FINANCIAL_ADVISOR', 'Reviews assessments and gives professional guidance'),
+--   ('ADMINISTRATOR', 'Manages users, loan types, subscriptions, and system settings');
 
-INSERT INTO loan_type
-  (loan_name, category, interest_rate, min_interest_rate, max_interest_rate, max_tenure_months,
-   min_loan_amount, max_loan_amount, min_tenure_months,
-   foir_excellent_max, foir_acceptable_max, foir_caution_max,
-   dti_low_max, dti_moderate_max, dti_high_max, multiplier, description)
-VALUES
-  ('Home Loan', 'SECURED', 8.50, 7.50, 11.50, 240, 100000, 100000000, 12, 45, 60, 70, 35, 50, 60, 55, 'Secured against property'),
-  ('Auto Loan', 'SECURED', 9.50, 7.50, 14.00, 84,  50000,  5000000,   12, 40, 55, 65, 30, 45, 55, 20, 'Secured against vehicle'),
-  ('Personal Loan', 'UNSECURED', 13.00, 10.00, 24.00, 60, 10000,  4000000,   6,  40, 50, 60, 30, 40, 50, 15, 'Unsecured, higher rate'),
-  ('Education Loan', 'SECURED', 10.00, 8.00, 15.00, 180, 50000,  15000000,  12, 40, 55, 65, 30, 45, 55, 20, 'Semi-secured, income-based');
+-- INSERT INTO subscription (plan_name, price, status) VALUES
+--   ('FREE', 0.00, 'ACTIVE'),
+--   ('PREMIUM', 499.00, 'ACTIVE');
+
+-- INSERT INTO loan_type
+--   (loan_name, category, interest_rate, min_interest_rate, max_interest_rate, max_tenure_months,
+--    min_loan_amount, max_loan_amount, min_tenure_months,
+--    foir_excellent_max, foir_acceptable_max, foir_caution_max,
+--    dti_low_max, dti_moderate_max, dti_high_max, multiplier, description)
+-- VALUES
+--   ('Home Loan', 'SECURED', 8.50, 7.50, 11.50, 240, 100000, 100000000, 12, 45, 60, 70, 35, 50, 60, 55, 'Secured against property'),
+--   ('Auto Loan', 'SECURED', 9.50, 7.50, 14.00, 84,  50000,  5000000,   12, 40, 55, 65, 30, 45, 55, 20, 'Secured against vehicle'),
+--   ('Personal Loan', 'UNSECURED', 13.00, 10.00, 24.00, 60, 10000,  4000000,   6,  40, 50, 60, 30, 40, 50, 15, 'Unsecured, higher rate'),
+--   ('Education Loan', 'SECURED', 10.00, 8.00, 15.00, 180, 50000,  15000000,  12, 40, 55, 65, 30, 45, 55, 20, 'Semi-secured, income-based');

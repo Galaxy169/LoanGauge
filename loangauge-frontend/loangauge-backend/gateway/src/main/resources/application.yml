@@ -1,0 +1,76 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+        - id: auth-users
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/users/**
+        - id: auth-admin-users
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/admin/users/**
+        - id: auth-admin-subscriptions
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/admin/subscriptions/**
+        - id: notification-service-notifications
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+        - id: notification-service-payments
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/payments/**
+        - id: notification-service-reports
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/reports/**
+        - id: notification-service-recommendations
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/recommendations/**
+        - id: notification-service-legacy
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notify/**
+        - id: financial-service
+          uri: lb://FINANCIAL-SERVICE
+          predicates:
+            - Path=/api/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+
+app:
+  cors:
+    # Comma-separated list of allowed origins — see CorsConfig.java. Defaults
+    # to the Vite dev server so local development needs no configuration.
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

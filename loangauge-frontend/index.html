@@ -1,12 +1,20 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>loangauge-frontend</title>
-
+    <meta name="description" content="LoanGauge — Precision financial readiness assessments. Know your loan eligibility with calibrated accuracy." />
+    <title>LoanGauge — Financial Readiness Calibrated</title>
+    <link rel="icon" type="image/svg+xml" href="/gauge-icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Runtime config, loaded before the app bundle so window.__APP_CONFIG__
+         is available immediately. Regenerated per-environment by
+         docker/entrypoint.sh in the container — see public/env-config.js
+         and src/utils/runtimeConfig.js for why this exists. -->
+    <script src="/env-config.js"></script>
   </head>
   <body>
     <div id="root"></div>

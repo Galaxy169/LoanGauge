@@ -8,4 +8,6 @@ import java.util.List;
 public interface LoanTypeRepository extends JpaRepository<LoanType, Long> {
 
     List<LoanType> findByIsActiveTrue();
+
+    boolean existsByLoanName(String loanName);
 }

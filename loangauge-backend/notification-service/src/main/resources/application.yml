@@ -33,7 +33,7 @@ eureka:
 
 gemini:
   api-key: ${GEMINI_API_KEY}
-  api-url: https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent
+  api-url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent
 
 razorpay:
   key-id: ${RAZORPAY_KEY_ID}
@@ -46,3 +46,10 @@ springdoc:
 logging:
   level:
     com.loangauge.notificationservice: DEBUG
+
+app:
+  mail:
+    from: ${MAIL_FROM:noreply@loangauge.com}
+
+internal:
+  api-secret: ${INTERNAL_API_SECRET}

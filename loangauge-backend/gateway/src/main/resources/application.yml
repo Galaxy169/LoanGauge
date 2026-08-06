@@ -11,14 +11,42 @@ spring:
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth/**
+        - id: auth-users
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/users/**
+        - id: auth-admin-users
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/admin/users/**
+        - id: auth-admin-subscriptions
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/admin/subscriptions/**
+        - id: notification-service-notifications
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+        - id: notification-service-payments
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/payments/**
+        - id: notification-service-reports
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/reports/**
+        - id: notification-service-recommendations
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/recommendations/**
+        - id: notification-service-legacy
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notify/**
         - id: financial-service
           uri: lb://FINANCIAL-SERVICE
           predicates:
             - Path=/api/**
-        - id: notification-service
-          uri: lb://NOTIFICATION-SERVICE
-          predicates:
-            - Path=/notify/**
 
 eureka:
   client:
