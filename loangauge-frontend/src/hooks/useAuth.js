@@ -1,27 +1,17 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useLoginMutation, useLogoutMutation } from "../services/authService";
-import { setCredentials, logout as logoutAction } from "../store/authSlice";
+import { useSelector } from 'react-redux';
+import { selectCurrentUser, selectIsAuthenticated } from '../store/authSlice';
 
 export function useAuth() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const user = useSelector(selectCurrentUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  const [loginMutation, { isLoading: isLoggingIn }] = useLoginMutation();
-  const [logoutMutation] = useLogoutMutation();
-
-  const login = async (credentials) => {
-    const result = await loginMutation(credentials).unwrap();
-    dispatch(setCredentials(result));
-    navigate("/dashboard");
+  return {
+    user,
+    isAuthenticated,
+    role: user?.role || null,
+    isPremium: user?.role === 'PREMIUM_USER' || user?.role === 'ADMINISTRATOR',
+    isAdmin: user?.role === 'ADMINISTRATOR',
+    isAdvisor: user?.role === 'FINANCIAL_ADVISOR',
+    isUser: user?.role === 'USER',
   };
-
-  const logout = async () => {
-    await logoutMutation();
-    dispatch(logoutAction());
-    navigate("/login");
-  };
-
-  return { user, isAuthenticated, login, logout, isLoggingIn };
 }

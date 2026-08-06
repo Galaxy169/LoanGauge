@@ -1,0 +1,76 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:loangauge}?createDatabaseIfNotExist=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+
+app:
+  mail:
+    from: ${MAIL_FROM:noreply@loangauge.com}
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expiration-ms: 900000        # 15 minutes
+    refresh-token-expiration-ms: 604800000    # 7 days
+  reset-token-expiration-ms: 900000           # 15 minutes
+  frontend:
+    # Must point at the real deployed frontend origin in every non-local
+    # environment — this URL is embedded directly in password-reset emails.
+    reset-password-url: ${FRONTEND_RESET_PASSWORD_URL:http://localhost:5173/reset-password}
+  refresh-token-cookie-name: refreshToken
+
+internal:
+  api-secret: ${INTERNAL_API_SECRET}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+# /actuator/health backs the container/ALB health check — only "health" is
+# exposed (not the full actuator surface) and it stays unauthenticated by
+# design so orchestration tooling can call it without credentials, but with
+# no sensitive detail leaked (show-details stays at its default, "never").
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

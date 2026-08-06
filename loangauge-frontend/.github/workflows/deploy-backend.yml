@@ -1,0 +1,76 @@
+name: Deploy Backend Services
+
+# Monorepo-style matrix build: only runs when something under
+# loangauge-backend/ actually changed, and only rebuilds/redeploys the
+# services affected... well, actually it rebuilds all five on any backend
+# change for simplicity, since these services are small enough that this
+# isn't a meaningful cost/time problem yet. Split into per-service path
+# filters (or per-service workflows) once that stops being true, or once
+# each service moves to its own repo.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'loangauge-backend/**'
+
+env:
+  AWS_REGION: ap-south-1
+  ECS_CLUSTER: loangauge-cluster
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      # fail-fast: false so one service's build failure doesn't cancel
+      # deployment of the other four that were fine.
+      fail-fast: false
+      matrix:
+        service:
+          - { name: eureka-server,       ecr_repo: loangauge-eureka-server,       ecs_service: loangauge-eureka-service }
+          - { name: gateway,             ecr_repo: loangauge-gateway,             ecs_service: loangauge-gateway-service }
+          - { name: auth-service,        ecr_repo: loangauge-auth-service,        ecs_service: loangauge-auth-service }
+          - { name: financial-service,   ecr_repo: loangauge-financial-service,   ecs_service: loangauge-financial-service }
+          - { name: notification-service, ecr_repo: loangauge-notification-service, ecs_service: loangauge-notification-service }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push ${{ matrix.service.name }}
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          ECR_REPOSITORY: ${{ matrix.service.ecr_repo }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd "loangauge-backend/${{ matrix.service.name }}"
+          docker build \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" \
+            .
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+      - name: Force new ECS deployment for ${{ matrix.service.name }}
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "${{ matrix.service.ecs_service }}" \
+            --force-new-deployment
+
+      - name: Wait for ${{ matrix.service.name }} to stabilize
+        run: |
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "${{ matrix.service.ecs_service }}"
