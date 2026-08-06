@@ -1,0 +1,28 @@
+# syntax=docker/dockerfile:1
+
+# ---- Build stage ----------------------------------------------------------
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+
+COPY .mvn/ .mvn/
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline -B
+
+COPY src ./src
+RUN ./mvnw clean package -DskipTests -B
+
+# ---- Runtime stage ----------------------------------------------------------
+FROM eclipse-temurin:21-jre-alpine AS runtime
+
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8083
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=45s --retries=3 \
+  CMD wget -q -O /dev/null http://localhost:8083/actuator/health || exit 1
+
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "/app/app.jar"]

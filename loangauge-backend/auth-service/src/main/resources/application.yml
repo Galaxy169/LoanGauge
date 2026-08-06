@@ -6,7 +6,7 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/loangauge
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:loangauge}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
@@ -33,7 +33,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka/}
   instance:
     prefer-ip-address: true
 
@@ -46,7 +46,7 @@ app:
     refresh-token-expiration-ms: 604800000    # 7 days
   reset-token-expiration-ms: 900000           # 15 minutes
   frontend:
-    reset-password-url: http://localhost:5173/reset-password
+    reset-password-url: ${FRONTEND_RESET_PASSWORD_URL:http://localhost:5173/reset-password}
   refresh-token-cookie-name: refreshToken
 
 internal:
@@ -58,3 +58,13 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true

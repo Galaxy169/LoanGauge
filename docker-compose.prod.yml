@@ -1,30 +1,17 @@
-# Local full-stack orchestration — brings up the entire LoanGauge system
-# (frontend, gateway, all three services, Eureka, MySQL, MongoDB, RabbitMQ)
-# for integration testing against real inter-service calls, without needing
-# AWS. NOT what actually runs in production — see DEPLOYMENT_GUIDE.md for
-# the real ECS/RDS/DocumentDB architecture. The value of keeping this file
-# around even in a "production-grade AWS" setup is fast local reproduction
-# of cross-service bugs.
-#
-# Usage:
-#   cp .env.compose.example .env.compose   # fill in real values
-#   docker compose --env-file .env.compose up --build
-
 name: loangauge
 
 services:
   mysql:
-    image: mysql:8.4
+    image: mysql:9.5
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: loangauge
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
@@ -32,29 +19,12 @@ services:
       retries: 10
     networks: [loangauge-net]
 
-  mongo:
-    image: mongo:7
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    networks: [loangauge-net]
-
   rabbitmq:
-    image: rabbitmq:3.13-management-alpine
+    image: rabbitmq:4.3-management-alpine
     restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
-    ports:
-      - "5672:5672"
-      - "15672:15672" # management UI — http://localhost:15672
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
@@ -65,8 +35,6 @@ services:
   eureka-server:
     build: ./loangauge-backend/eureka-server
     restart: unless-stopped
-    ports:
-      - "8761:8761"
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8761/actuator/health"]
       interval: 10s
@@ -89,12 +57,8 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       INTERNAL_API_SECRET: ${INTERNAL_API_SECRET}
-      # Container-network hostname, not localhost — resolves via Compose's
-      # built-in DNS since every service here is on the same network.
       EUREKA_URI: http://eureka-server:8761/eureka/
-      FRONTEND_RESET_PASSWORD_URL: http://localhost:5173/reset-password
-    ports:
-      - "8081:8081"
+      FRONTEND_RESET_PASSWORD_URL: ${FRONTEND_RESET_PASSWORD_URL}
     networks: [loangauge-net]
 
   financial-service:
@@ -102,32 +66,28 @@ services:
     restart: unless-stopped
     depends_on:
       mysql: { condition: service_healthy }
-      mongo: { condition: service_healthy }
       rabbitmq: { condition: service_healthy }
       eureka-server: { condition: service_healthy }
     environment:
       DB_HOST: mysql
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      MONGODB_URI: mongodb://mongo:27017/loangauge
+      MONGODB_URI: ${MONGODB_URI}
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       EUREKA_URI: http://eureka-server:8761/eureka
-    ports:
-      - "8082:8082"
     networks: [loangauge-net]
 
   notification-service:
     build: ./loangauge-backend/notification-service
     restart: unless-stopped
     depends_on:
-      mongo: { condition: service_healthy }
       rabbitmq: { condition: service_healthy }
       eureka-server: { condition: service_healthy }
     environment:
-      MONGODB_URI: mongodb://mongo:27017/loangauge
+      MONGODB_URI: ${MONGODB_URI}
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
@@ -138,8 +98,6 @@ services:
       RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET}
       INTERNAL_API_SECRET: ${INTERNAL_API_SECRET}
       EUREKA_URI: http://eureka-server:8761/eureka
-    ports:
-      - "8083:8083"
     networks: [loangauge-net]
 
   gateway:
@@ -152,29 +110,23 @@ services:
       notification-service: { condition: service_started }
     environment:
       EUREKA_URI: http://eureka-server:8761/eureka
-      # Frontend runs on the HOST (browser), reached via the published port
-      # below — from the browser's perspective that's localhost:3000, not
-      # a Docker-network hostname.
-      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
     ports:
       - "8080:8080"
     networks: [loangauge-net]
 
   frontend:
     build:
-      context: .
+      context: ./loangauge-frontend
       dockerfile: Dockerfile
     restart: unless-stopped
     depends_on:
       - gateway
     environment:
-      # The BROWSER (not this container) calls this URL directly, so it must
-      # be reachable from the host machine — gateway's published port on
-      # localhost, not the Docker-network hostname "gateway".
-      API_BASE_URL: http://localhost:8080
+      API_BASE_URL: ${API_BASE_URL}
       RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
     ports:
-      - "3000:80"
+      - "80:80"
     networks: [loangauge-net]
 
 networks:
@@ -183,4 +135,3 @@ networks:
 
 volumes:
   mysql-data:
-  mongo-data:
