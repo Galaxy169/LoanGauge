@@ -44,7 +44,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <span className="text-text-muted uppercase block">Email Support</span>
-                  <span className="font-semibold text-text-primary">support@loangauge.io</span>
+                  <span className="font-semibold text-text-primary">loangauge70@gmail.com</span>
                 </div>
               </div>
 
@@ -54,7 +54,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <span className="text-text-muted uppercase block">Phone Advisory</span>
-                  <span className="font-semibold text-text-primary">+91 1800-LOAN-GAUGE</span>
+                  <span className="font-semibold text-text-primary">+91-8126924152</span>
                 </div>
               </div>
 
@@ -64,7 +64,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <span className="text-text-muted uppercase block">Headquarters</span>
-                  <span className="font-semibold text-text-primary">Financial District, Tech Hub</span>
+                  <span className="font-semibold text-text-primary">Kharghar, Navi Mumbai</span>
                 </div>
               </div>
             </div>
@@ -79,7 +79,7 @@ export default function ContactPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <Input
                 label="Full Name"
-                placeholder="John Doe"
+                placeholder="Anya Yadav"
                 {...register('name', { required: 'Name is required' })}
                 error={errors.name?.message}
               />
@@ -87,7 +87,7 @@ export default function ContactPage() {
               <Input
                 label="Email Address"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="youremail@example.com"
                 {...register('email', { required: 'Email is required' })}
                 error={errors.email?.message}
               />

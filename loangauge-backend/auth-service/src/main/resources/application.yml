@@ -39,12 +39,12 @@ eureka:
 
 app:
   mail:
-    from: ${MAIL_FROM:noreply@loangauge.com}
+    from: ${MAIL_FROM}
   jwt:
     secret: ${JWT_SECRET}
-    access-token-expiration-ms: 900000        # 15 minutes
-    refresh-token-expiration-ms: 604800000    # 7 days
-  reset-token-expiration-ms: 900000           # 15 minutes
+    access-token-expiration-ms: 900000 # 15 minutes
+    refresh-token-expiration-ms: 604800000 # 7 days
+  reset-token-expiration-ms: 900000 # 15 minutes
   frontend:
     reset-password-url: ${FRONTEND_RESET_PASSWORD_URL:http://localhost:5173/reset-password}
   refresh-token-cookie-name: refreshToken

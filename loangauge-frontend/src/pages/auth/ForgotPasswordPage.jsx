@@ -72,7 +72,7 @@ const ForgotPasswordPage = () => {
         <Input
           label="Email Address"
           type="email"
-          placeholder="name@example.com"
+          placeholder="bhavik@example.com"
           {...register('email')}
           error={errors.email?.message}
         />
