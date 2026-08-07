@@ -144,11 +144,9 @@ services:
     environment:
       API_BASE_URL: ${API_BASE_URL}
       RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
-    # ports:
-    #   - "80:80"
     networks: [loangauge-net]
 
-    caddy:
+  caddy:
     image: caddy:2-alpine
     restart: unless-stopped
     ports:
