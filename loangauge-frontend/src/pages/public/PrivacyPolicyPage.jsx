@@ -6,7 +6,6 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 space-y-6 text-text-primary">
       <div className="space-y-1">
-        <Badge variant="default">Data Protection Protocol</Badge>
         <h1 className="text-3xl font-bold text-text-primary">Privacy Policy</h1>
         <p className="text-xs text-text-muted">Last Updated: August 2026</p>
       </div>

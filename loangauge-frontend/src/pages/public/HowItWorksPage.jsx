@@ -32,7 +32,6 @@ export default function HowItWorksPage() {
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 space-y-8 text-text-primary">
       <div className="text-center space-y-2 max-w-2xl mx-auto">
-        <Badge variant="default">4-Step Calibration Guide</Badge>
         <h1 className="text-3xl font-bold text-text-primary">
           How LoanGauge Calibrates Your Eligibility
         </h1>

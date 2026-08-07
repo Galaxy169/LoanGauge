@@ -25,7 +25,6 @@ export default function AboutPage() {
   return (
     <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6 space-y-8 text-text-primary">
       <div className="text-center space-y-2 max-w-2xl mx-auto">
-        <Badge variant="default">Our Mission</Badge>
         <h1 className="text-3xl font-bold text-text-primary">
           Calibrating the Future of Borrowing Confidence
         </h1>
